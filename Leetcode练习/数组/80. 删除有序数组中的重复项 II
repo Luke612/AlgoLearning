@@ -1,0 +1,69 @@
+> https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/description/?envType=study-plan-v2&envId=top-interview-150
+
+# 解题阶段
+## 解题思考
+- 有序数组，意味着所有重复元素都会在一起，而不是分布在各处
+- 原地删除，需要用到双指针，具体说是快慢指针
+  - 慢指针指向新数组的最后的位置
+  - 快指针用来遍历数组
+- 相比于之前的删除重复元素的题目，这里增加了超过两次的元素最后只出现两次，既要判断重复，也要判断个数
+  - 先判断是否重复，如果重复，计数器增加；
+  - 如果计数器大于2，则跳过；如果有新的非重复元素进来，则重置计数器；
+- 最后需要返回新的长度
+## 解题代码
+```
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int length = nums.length;
+        int slow = 0;
+        int fast = 1;
+        int count = 1;
+        if (length == 1) return 1;
+        while (fast < length) {
+            if (nums[slow] == nums[fast]) {
+                if (count < 2) {
+                    count++;
+                    slow++;
+                    fast++;
+                }else {
+                    count++;
+                    fast++;
+                }
+            }
+            else {
+                // slow++;
+                nums[slow++] = nums[fast++];
+                // fast++;
+                count = 1;
+            }
+        }
+```
+
+# 反思阶段
+## 官方题解
+```
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int n = nums.length;
+        if (n <= 2) {
+            return n;
+        }
+        int slow = 2, fast = 2;
+        while (fast < n) {
+            if (nums[slow - 2] != nums[fast]) {
+                nums[slow] = nums[fast];
+                ++slow;
+            }
+            ++fast;
+        }
+        return slow;
+    }
+}
+```
+## 错题集
+- 主要是迭代过程没有想清楚
+  - 长度为2的都可以直接返回
+  - 特殊情况处理完后，从2开始即可
+  - 从2开始，无论是多少，如果相等就是无效的，直接跳过，如果不相等就是有效的，直接赋值
+  - 赋值完后，slow + 1
+  - 然后fast + 1
